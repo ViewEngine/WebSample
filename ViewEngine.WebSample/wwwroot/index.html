@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewEngine Web Sample</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-box {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .status-box.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .status-box.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .results {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metadata-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .metadata-item h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .metadata-item p {
+            color: #333;
+            word-break: break-all;
+        }
+
+        .thumbnail {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .thumbnail img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .content-preview {
+            margin-top: 20px;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .content-preview pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .links-list {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .link-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s;
+        }
+
+        .link-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .link-item.ad {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            border: 2px solid #ffc107;
+            border-left: 5px solid #ff9800;
+            position: relative;
+        }
+
+        .link-item.ad::before {
+            content: '⚠️ AD';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .link-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .link-icon {
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .link-text {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .link-badges {
+            display: flex;
+            gap: 6px;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .badge.rank {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge.ad {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .link-url {
+            font-size: 13px;
+            color: #667eea;
+            text-decoration: none;
+            word-break: break-all;
+            display: block;
+        }
+
+        .link-url:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 ViewEngine Web Sample</h1>
+            <p>Test the ViewEngine REST API and see page retrieval in action</p>
+        </div>
+
+        <div class="card">
+            <div class="form-group">
+                <label for="apiKey">🔑 API Key</label>
+                <input type="password" id="apiKey" placeholder="Enter your ViewEngine API key">
+                <small style="color: #666; display: block; margin-top: 5px;">Your API key is stored locally and never sent to this demo server</small>
+            </div>
+
+            <div class="form-group">
+                <label for="url">🌐 URL to Retrieve</label>
+                <input type="text" id="url" placeholder="https://example.com" value="https://news.google.com">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="forceRefresh">
+                    <label for="forceRefresh" style="margin: 0;">Force fresh retrieval (bypass cache)</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mode">Processing Mode</label>
+                <select id="mode" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                    <option value="private">Private (most secure - uses only your feeders)</option>
+                    <option value="community">Community (faster - may use community feeders)</option>
+                </select>
+                <small style="color: #666; display: block; margin-top: 5px;">Private mode requires your own feeders. Community mode may be processed by any available feeder.</small>
+            </div>
+
+            <button class="btn btn-primary" id="submitBtn" onclick="submitRetrieval()">
+                Retrieve Page
+            </button>
+
+            <div id="statusBox"></div>
+        </div>
+
+        <div class="card results" id="resultsCard">
+            <h2>📊 Results</h2>
+
+            <div class="metadata-grid" id="metadataGrid"></div>
+
+            <div id="thumbnailSection" class="hidden">
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">📸 Page Thumbnail</h3>
+                <div class="thumbnail">
+                    <img id="thumbnailImg" alt="Page thumbnail">
+                </div>
+            </div>
+
+            <div id="linksSection" class="hidden">
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">🔗 Links Found on Page</h3>
+                <div id="linksList" class="links-list"></div>
+            </div>
+
+            <div id="contentSection" class="hidden">
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">📄 Page Content (JSON)</h3>
+                <div class="content-preview">
+                    <pre id="contentPre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load API key from localStorage
+        const apiKeyInput = document.getElementById('apiKey');
+        const savedApiKey = localStorage.getItem('viewengine_api_key');
+        if (savedApiKey) {
+            apiKeyInput.value = savedApiKey;
+        }
+
+        // Save API key when changed
+        apiKeyInput.addEventListener('change', () => {
+            localStorage.setItem('viewengine_api_key', apiKeyInput.value);
+        });
+
+        let pollInterval;
+
+        async function submitRetrieval() {
+            const apiKey = apiKeyInput.value.trim();
+            const url = document.getElementById('url').value.trim();
+            const forceRefresh = document.getElementById('forceRefresh').checked;
+            const mode = document.getElementById('mode').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const statusBox = document.getElementById('statusBox');
+            const resultsCard = document.getElementById('resultsCard');
+
+            if (!apiKey) {
+                showStatus('error', '❌ Please enter your API key');
+                return;
+            }
+
+            if (!url) {
+                showStatus('error', '❌ Please enter a URL');
+                return;
+            }
+
+            // Save API key
+            localStorage.setItem('viewengine_api_key', apiKey);
+
+            // Reset UI
+            submitBtn.disabled = true;
+            resultsCard.classList.remove('show');
+            showStatus('', '<div class="spinner"></div><p style="text-align: center; margin-top: 10px;">Submitting retrieval request...</p>');
+
+            try {
+                // Submit retrieval request
+                const response = await fetch('/api/retrieve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ apiKey, url, forceRefresh, mode })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showStatus('error', `❌ Error: ${data.error || response.statusText}`);
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                showStatus('success', `✅ Request submitted! Request ID: ${data.requestId}`);
+
+                // Start polling for results
+                pollForResults(data.requestId, apiKey);
+
+            } catch (error) {
+                showStatus('error', `❌ Error: ${error.message}`);
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function pollForResults(requestId, apiKey) {
+            let attempts = 0;
+            const maxAttempts = 60;
+
+            const poll = async () => {
+                attempts++;
+
+                try {
+                    const response = await fetch(`/api/status/${requestId}?apiKey=${encodeURIComponent(apiKey)}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        showStatus('error', `❌ Error: ${data.error || response.statusText}`);
+                        document.getElementById('submitBtn').disabled = false;
+                        clearInterval(pollInterval);
+                        return;
+                    }
+
+                    showStatus('', `<div class="spinner"></div><p style="text-align: center; margin-top: 10px;">Polling... (${attempts}/${maxAttempts}) Status: ${data.status}</p>`);
+
+                    if (data.status === 'complete') {
+                        clearInterval(pollInterval);
+                        showStatus('success', '✅ Retrieval completed successfully!');
+                        await displayResults(requestId, apiKey, data);
+                        document.getElementById('submitBtn').disabled = false;
+                    } else if (data.status === 'failed') {
+                        clearInterval(pollInterval);
+                        showStatus('error', `❌ Retrieval failed: ${data.error}`);
+                        document.getElementById('submitBtn').disabled = false;
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(pollInterval);
+                        showStatus('error', '❌ Timeout: Maximum polling attempts reached');
+                        document.getElementById('submitBtn').disabled = false;
+                    }
+                } catch (error) {
+                    showStatus('error', `❌ Polling error: ${error.message}`);
+                    clearInterval(pollInterval);
+                    document.getElementById('submitBtn').disabled = false;
+                }
+            };
+
+            // Poll immediately, then every 2 seconds
+            poll();
+            pollInterval = setInterval(poll, 2000);
+        }
+
+        async function displayResults(requestId, apiKey, statusData) {
+            const resultsCard = document.getElementById('resultsCard');
+            const metadataGrid = document.getElementById('metadataGrid');
+
+            // Show metadata
+            const metadata = [
+                { title: 'Request ID', value: statusData.requestId },
+                { title: 'URL', value: statusData.url },
+                { title: 'Status', value: statusData.status },
+                { title: 'Completed At', value: new Date(statusData.completedAt).toLocaleString() },
+                { title: 'Content Hash', value: statusData.content?.contentHash || 'N/A' }
+            ];
+
+            if (statusData.content?.metrics) {
+                Object.entries(statusData.content.metrics).forEach(([key, value]) => {
+                    metadata.push({ title: key, value: String(value) });
+                });
+            }
+
+            metadataGrid.innerHTML = metadata.map(item => `
+                <div class="metadata-item">
+                    <h4>${item.title}</h4>
+                    <p>${item.value}</p>
+                </div>
+            `).join('');
+
+            // Download and display content
+            try {
+                const contentResponse = await fetch(`/api/content/${requestId}?apiKey=${encodeURIComponent(apiKey)}`);
+                const contentData = await contentResponse.json();
+
+                if (contentResponse.ok) {
+                    document.getElementById('contentSection').classList.remove('hidden');
+                    document.getElementById('contentPre').textContent = JSON.stringify(contentData, null, 2);
+
+                    // Show thumbnail if available
+                    if (contentData.thumbnail) {
+                        document.getElementById('thumbnailSection').classList.remove('hidden');
+                        document.getElementById('thumbnailImg').src = `data:image/png;base64,${contentData.thumbnail}`;
+                    }
+
+                    // Show links if available
+                    const allLinks = [...(contentData.routes || []), ...(contentData.bodyRoutes || [])];
+                    if (allLinks.length > 0) {
+                        document.getElementById('linksSection').classList.remove('hidden');
+                        const linksList = document.getElementById('linksList');
+
+                        // Remove duplicates by URL
+                        const uniqueLinks = Array.from(
+                            new Map(allLinks.map(link => [link.url, link])).values()
+                        );
+
+                        // Sort by rank (higher first), then by occurrences
+                        uniqueLinks.sort((a, b) => {
+                            if (b.rank !== a.rank) return b.rank - a.rank;
+                            return b.occurrences - a.occurrences;
+                        });
+
+                        linksList.innerHTML = uniqueLinks.map(link => {
+                            const adClass = link.isPotentialAd ? ' ad' : '';
+                            const linkText = link.text || 'Untitled Link';
+
+                            return `
+                                <div class="link-item${adClass}">
+                                    <div class="link-header">
+                                        <span class="link-icon">🔗</span>
+                                        <span class="link-text">${linkText}</span>
+                                        <div class="link-badges">
+                                            ${link.rank > 0 ? `<span class="badge rank">Rank: ${link.rank}</span>` : ''}
+                                            ${link.occurrences > 1 ? `<span class="badge">${link.occurrences}x</span>` : ''}
+                                            ${link.isPotentialAd ? `<span class="badge ad">Ad</span>` : ''}
+                                        </div>
+                                    </div>
+                                    <a class="link-url" href="${link.url}" target="_blank" rel="noopener noreferrer">${link.url}</a>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading content:', error);
+            }
+
+            resultsCard.classList.add('show');
+        }
+
+        function showStatus(type, message) {
+            const statusBox = document.getElementById('statusBox');
+            statusBox.className = `status-box ${type}`;
+            statusBox.innerHTML = message;
+        }
+    </script>
+</body>
+</html>
